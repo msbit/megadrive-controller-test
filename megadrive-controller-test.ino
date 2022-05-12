@@ -19,11 +19,7 @@ struct ButtonMapping {
   const char label[2];
 };
 
-constexpr ButtonMapping low[6] = {
-  {Button::UP1, Pin::UP, "-"},
-  {Button::DOWN1, Pin::DOWN, "-"},
-  {Button::GND1, Pin::GND_LEFT, "-"},
-  {Button::GND2, Pin::GND_RIGHT, "-"},
+constexpr ButtonMapping low[2] = {
   {Button::A, Pin::A_B, "A"},
   {Button::START, Pin::START_C, "S"},
 };

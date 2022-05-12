@@ -14,9 +14,9 @@ enum struct Button: uint8_t {
 };
 
 struct ButtonMapping {
-  const Button &button;
-  const Pin &pin;
-  const char *label;
+  const Button button;
+  const Pin pin;
+  const char label[2];
 };
 
 constexpr ButtonMapping low[6] = {

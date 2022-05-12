@@ -34,10 +34,14 @@ constexpr ButtonMapping high[6] = {
 };
 
 void printButtons(const bool *);
+void blinkButtons(const bool *);
 
 void _pinMode(Pin, uint8_t);
 int _digitalRead(Pin);
 void _digitalWrite(Pin, uint8_t);
+
+constexpr auto period = 1000 / 60;
+auto loopcount = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -72,33 +76,45 @@ void loop() {
     buttons[static_cast<uint8_t>(mapping.button)] = _digitalRead(mapping.pin);
   }
 
-  printButtons(buttons);
+  if (loopcount == 10) {
+    printButtons(buttons);
+    loopcount = 0;
+  }
 
-  delay(100);
+  blinkButtons(buttons);
+
+  ++loopcount;
+  delay(period);
 }
 
 void printButtons(const bool *buttons) {
+  for (const auto &mapping : low) {
+    Serial.print(buttons[static_cast<uint8_t>(mapping.button)] == LOW ? mapping.label : ".");
+  }
+
+  for (const auto &mapping : high) {
+    Serial.print(buttons[static_cast<uint8_t>(mapping.button)] == LOW ? mapping.label : ".");
+  }
+
+  Serial.println("");
+}
+
+void blinkButtons(const bool *buttons) {
   auto pressed = false;
 
   for (const auto &mapping : low) {
     if (buttons[static_cast<uint8_t>(mapping.button)] == LOW) {
       pressed = true;
-      Serial.print(mapping.label);
-    } else {
-      Serial.print(".");
+      break;
     }
   }
 
   for (const auto &mapping : high) {
     if (buttons[static_cast<uint8_t>(mapping.button)] == LOW) {
       pressed = true;
-      Serial.print(mapping.label);
-    } else {
-      Serial.print(".");
+      break;
     }
   }
-
-  Serial.println("");
 
   digitalWrite(LED_BUILTIN, pressed ? HIGH : LOW);
 }

@@ -33,8 +33,8 @@ constexpr ButtonMapping high[6] = {
   {Button::C, Pin::START_C, "C"},
 };
 
-void printButtons(const bool *);
-void blinkButtons(const bool *);
+void printButtons(const bool[12]);
+void blinkButtons(const bool[12]);
 
 void _pinMode(Pin, uint8_t);
 int _digitalRead(Pin);
@@ -87,7 +87,7 @@ void loop() {
   delay(period);
 }
 
-void printButtons(const bool *buttons) {
+void printButtons(const bool buttons[12]) {
   for (const auto &mapping : low) {
     Serial.print(buttons[static_cast<uint8_t>(mapping.button)] == LOW ? mapping.label : ".");
   }
@@ -99,7 +99,7 @@ void printButtons(const bool *buttons) {
   Serial.println("");
 }
 
-void blinkButtons(const bool *buttons) {
+void blinkButtons(const bool buttons[12]) {
   auto pressed = false;
 
   for (const auto &mapping : low) {

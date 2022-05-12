@@ -60,8 +60,8 @@ void setup() {
 
 void loop() {
   bool buttons[12] = {
-    LOW, LOW, LOW, LOW, LOW, LOW,
-    LOW, LOW, LOW, LOW, LOW, LOW,
+    HIGH, HIGH, HIGH, HIGH, HIGH, HIGH,
+    HIGH, HIGH, HIGH, HIGH, HIGH, HIGH,
   };
 
   _digitalWrite(Pin::SELECT, LOW);

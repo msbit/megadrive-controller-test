@@ -1,5 +1,5 @@
 enum struct Pin: uint8_t {
-  UP = 5,        //  serial pin 1
+  UP = 5,        //  serial pin 1, Arduino pin 1 is used for serial TX
   DOWN = 2,      //  serial pin 2
   GND_LEFT = 3,  //  serial pin 3
   GND_RIGHT = 4, //  serial pin 4

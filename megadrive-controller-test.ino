@@ -13,9 +13,31 @@ enum struct Button: uint8_t {
   UP2, DOWN2, LEFT, RIGHT, B, C,
 };
 
-const char buttonLabels[12][2] = {
-  "-", "-", "-", "-", "A", "S", "U", "D", "L", "R", "B", "C"  
+struct ButtonMapping {
+  const Button &button;
+  const Pin &pin;
+  const char *label;
 };
+
+constexpr ButtonMapping low[6] = {
+  {Button::UP1, Pin::UP, "-"},
+  {Button::DOWN1, Pin::DOWN, "-"},
+  {Button::GND1, Pin::GND_LEFT, "-"},
+  {Button::GND2, Pin::GND_RIGHT, "-"},
+  {Button::A, Pin::A_B, "A"},
+  {Button::START, Pin::START_C, "S"},
+};
+
+constexpr ButtonMapping high[6] = {
+  {Button::UP2, Pin::UP, "U"},
+  {Button::DOWN2, Pin::DOWN, "D"},
+  {Button::LEFT, Pin::GND_LEFT, "L"},
+  {Button::RIGHT, Pin::GND_RIGHT, "R"},
+  {Button::B, Pin::A_B, "B"},
+  {Button::C, Pin::START_C, "C"},
+};
+
+void printButtons(const bool *);
 
 void _pinMode(Pin, uint8_t);
 int _digitalRead(Pin);
@@ -30,7 +52,7 @@ void setup() {
   _pinMode(Pin::GND_RIGHT, INPUT);
   _pinMode(Pin::A_B, INPUT);
   _pinMode(Pin::START_C, INPUT);
-  
+
   _pinMode(Pin::SELECT, OUTPUT);
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -38,53 +60,49 @@ void setup() {
 
 void loop() {
   bool buttons[12] = {
-    LOW, LOW, LOW, LOW, LOW, LOW, 
+    LOW, LOW, LOW, LOW, LOW, LOW,
     LOW, LOW, LOW, LOW, LOW, LOW,
   };
-  
+
   _digitalWrite(Pin::SELECT, LOW);
-  
-  buttons[static_cast<uint8_t>(Button::UP1)] = _digitalRead(Pin::UP);
-  buttons[static_cast<uint8_t>(Button::DOWN1)] = _digitalRead(Pin::DOWN);
-  buttons[static_cast<uint8_t>(Button::GND1)] = _digitalRead(Pin::GND_LEFT);
-  buttons[static_cast<uint8_t>(Button::GND2)] = _digitalRead(Pin::GND_RIGHT);
-  buttons[static_cast<uint8_t>(Button::A)] = _digitalRead(Pin::A_B);
-  buttons[static_cast<uint8_t>(Button::START)] = _digitalRead(Pin::START_C);
+
+  for (const auto &mapping : low) {
+    buttons[static_cast<uint8_t>(mapping.button)] = _digitalRead(mapping.pin);
+  }
 
   _digitalWrite(Pin::SELECT, HIGH);
 
-  buttons[static_cast<uint8_t>(Button::UP2)] = _digitalRead(Pin::UP);
-  buttons[static_cast<uint8_t>(Button::DOWN2)] = _digitalRead(Pin::DOWN);
-  buttons[static_cast<uint8_t>(Button::LEFT)] = _digitalRead(Pin::GND_LEFT);
-  buttons[static_cast<uint8_t>(Button::RIGHT)] = _digitalRead(Pin::GND_RIGHT);
-  buttons[static_cast<uint8_t>(Button::B)] = _digitalRead(Pin::A_B);
-  buttons[static_cast<uint8_t>(Button::C)] = _digitalRead(Pin::START_C);
+  for (const auto &mapping : high) {
+    buttons[static_cast<uint8_t>(mapping.button)] = _digitalRead(mapping.pin);
+  }
 
   printButtons(buttons);
-  
+
   delay(100);
 }
 
 void printButtons(const bool *buttons) {
   auto pressed = false;
-  
-  Serial.print("[");
-  for (auto i = 0; i < 11; i++) {
-    if (buttons[i] == LOW) {
+
+  for (const auto &mapping : low) {
+    if (buttons[static_cast<uint8_t>(mapping.button)] == LOW) {
       pressed = true;
-      Serial.print(buttonLabels[i]);
+      Serial.print(mapping.label);
     } else {
-      Serial.print(" ");
+      Serial.print(".");
     }
-    Serial.print(" ");
   }
-  if (buttons[11] == LOW) {
-    pressed = true;
-    Serial.print(buttonLabels[11]);
-  } else {
-    Serial.print(" ");
+
+  for (const auto &mapping : high) {
+    if (buttons[static_cast<uint8_t>(mapping.button)] == LOW) {
+      pressed = true;
+      Serial.print(mapping.label);
+    } else {
+      Serial.print(".");
+    }
   }
-  Serial.println("]");
+
+  Serial.println("");
 
   digitalWrite(LED_BUILTIN, pressed ? HIGH : LOW);
 }

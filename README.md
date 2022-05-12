@@ -1,0 +1,39 @@
+### Megadrive Controller Test
+
+An Arduino sketch to allow testing the function of a Sega Megadrive 3 button controller. This will poll all the inputs at approximately 10Hz and output the status of each on the USB serial line, with the following order:
+
+```
+ASUDLRBC
+```
+
+where each position denotes the following buttons:
+
+* `A`   A button
+* `S`   start button
+* `U`   up button
+* `D`   down button
+* `L`   left button
+* `R`   right button
+* `B`   B button
+* `C`   C button
+
+The value at each position can either be the short label above, or `.` to indicate that the button isn't being pressed.
+
+### Hardware
+
+This has been developed and tested solely on an Arduino Uno.
+
+The expected pin mapping is:
+
+```
+Arduino   Serial Port
+    5           1
+    2           2
+    3           3
+    4           4
+    6           6
+    7           7
+    9           9
+```
+
+Deviation from the straight mapping is due to pin 1 on the Arduino Uno also being used as TX for the serial port.

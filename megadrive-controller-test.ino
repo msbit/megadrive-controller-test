@@ -46,12 +46,12 @@ auto loopcount = 0;
 void setup() {
   Serial.begin(9600);
 
-  _pinMode(Pin::UP, INPUT);
-  _pinMode(Pin::DOWN, INPUT);
-  _pinMode(Pin::GND_LEFT, INPUT);
-  _pinMode(Pin::GND_RIGHT, INPUT);
-  _pinMode(Pin::A_B, INPUT);
-  _pinMode(Pin::START_C, INPUT);
+  _pinMode(Pin::UP, INPUT_PULLUP);
+  _pinMode(Pin::DOWN, INPUT_PULLUP);
+  _pinMode(Pin::GND_LEFT, INPUT_PULLUP);
+  _pinMode(Pin::GND_RIGHT, INPUT_PULLUP);
+  _pinMode(Pin::A_B, INPUT_PULLUP);
+  _pinMode(Pin::START_C, INPUT_PULLUP);
 
   _pinMode(Pin::SELECT, OUTPUT);
 

@@ -1,92 +1,102 @@
-constexpr auto PIN_UP = 5;        //  serial pin 1
-constexpr auto PIN_DOWN = 2;      //  serial pin 2
-constexpr auto PIN_GND_LEFT = 3;  //  serial pin 3
-constexpr auto PIN_GND_RIGHT = 4; //  serial pin 4
-constexpr auto PIN_A_B = 6;       //  serial pin 6
-constexpr auto PIN_SELECT = 7;    //  serial pin 7
-constexpr auto PIN_START_C = 9;   //  serial pin 9
+enum struct Pin: uint8_t {
+  UP = 5,        //  serial pin 1
+  DOWN = 2,      //  serial pin 2
+  GND_LEFT = 3,  //  serial pin 3
+  GND_RIGHT = 4, //  serial pin 4
+  A_B = 6,       //  serial pin 6
+  SELECT = 7,    //  serial pin 7
+  START_C = 9,   //  serial pin 9
+};
 
-constexpr auto VALUE_UP1 = 0;
-constexpr auto VALUE_DOWN1 = 1;
-constexpr auto VALUE_GND1 = 2;
-constexpr auto VALUE_GND2 = 3;
-constexpr auto VALUE_A = 4;
-constexpr auto VALUE_START = 5;
-constexpr auto VALUE_UP2 = 6;
-constexpr auto VALUE_DOWN2 = 7;
-constexpr auto VALUE_LEFT = 8;
-constexpr auto VALUE_RIGHT = 9;
-constexpr auto VALUE_B = 10;
-constexpr auto VALUE_C = 11;
+enum struct Button: uint8_t {
+  UP1, DOWN1, GND1, GND2, A, START,
+  UP2, DOWN2, LEFT, RIGHT, B, C,
+};
 
-const char valueLabels[12][2] = {
+const char buttonLabels[12][2] = {
   "-", "-", "-", "-", "A", "S", "U", "D", "L", "R", "B", "C"  
 };
+
+void _pinMode(Pin, uint8_t);
+int _digitalRead(Pin);
+void _digitalWrite(Pin, uint8_t);
 
 void setup() {
   Serial.begin(9600);
 
-  pinMode(PIN_UP, INPUT);
-  pinMode(PIN_DOWN, INPUT);
-  pinMode(PIN_GND_LEFT, INPUT);
-  pinMode(PIN_GND_RIGHT, INPUT);
-  pinMode(PIN_A_B, INPUT);
-  pinMode(PIN_START_C, INPUT);
+  _pinMode(Pin::UP, INPUT);
+  _pinMode(Pin::DOWN, INPUT);
+  _pinMode(Pin::GND_LEFT, INPUT);
+  _pinMode(Pin::GND_RIGHT, INPUT);
+  _pinMode(Pin::A_B, INPUT);
+  _pinMode(Pin::START_C, INPUT);
   
-  pinMode(PIN_SELECT, OUTPUT);
+  _pinMode(Pin::SELECT, OUTPUT);
 
   pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop() {
-  bool values[12] = {
+  bool buttons[12] = {
     LOW, LOW, LOW, LOW, LOW, LOW, 
     LOW, LOW, LOW, LOW, LOW, LOW,
   };
   
-  digitalWrite(PIN_SELECT, LOW);
+  _digitalWrite(Pin::SELECT, LOW);
   
-  values[0] = digitalRead(PIN_UP);
-  values[1] = digitalRead(PIN_DOWN);
-  values[2] = digitalRead(PIN_GND_LEFT);
-  values[3] = digitalRead(PIN_GND_RIGHT);
-  values[4] = digitalRead(PIN_A_B);
-  values[5] = digitalRead(PIN_START_C);
+  buttons[static_cast<uint8_t>(Button::UP1)] = _digitalRead(Pin::UP);
+  buttons[static_cast<uint8_t>(Button::DOWN1)] = _digitalRead(Pin::DOWN);
+  buttons[static_cast<uint8_t>(Button::GND1)] = _digitalRead(Pin::GND_LEFT);
+  buttons[static_cast<uint8_t>(Button::GND2)] = _digitalRead(Pin::GND_RIGHT);
+  buttons[static_cast<uint8_t>(Button::A)] = _digitalRead(Pin::A_B);
+  buttons[static_cast<uint8_t>(Button::START)] = _digitalRead(Pin::START_C);
 
-  digitalWrite(PIN_SELECT, HIGH);
+  _digitalWrite(Pin::SELECT, HIGH);
 
-  values[6] = digitalRead(PIN_UP);
-  values[7] = digitalRead(PIN_DOWN);
-  values[8] = digitalRead(PIN_GND_LEFT);
-  values[9] = digitalRead(PIN_GND_RIGHT);
-  values[10] = digitalRead(PIN_A_B);
-  values[11] = digitalRead(PIN_START_C);
+  buttons[static_cast<uint8_t>(Button::UP2)] = _digitalRead(Pin::UP);
+  buttons[static_cast<uint8_t>(Button::DOWN2)] = _digitalRead(Pin::DOWN);
+  buttons[static_cast<uint8_t>(Button::LEFT)] = _digitalRead(Pin::GND_LEFT);
+  buttons[static_cast<uint8_t>(Button::RIGHT)] = _digitalRead(Pin::GND_RIGHT);
+  buttons[static_cast<uint8_t>(Button::B)] = _digitalRead(Pin::A_B);
+  buttons[static_cast<uint8_t>(Button::C)] = _digitalRead(Pin::START_C);
 
-  printValues(values);
+  printButtons(buttons);
   
   delay(100);
 }
 
-void printValues(const bool *values) {
+void printButtons(const bool *buttons) {
   auto pressed = false;
   
   Serial.print("[");
   for (auto i = 0; i < 11; i++) {
-    if (values[i] == LOW) {
+    if (buttons[i] == LOW) {
       pressed = true;
-      Serial.print(valueLabels[i]);
+      Serial.print(buttonLabels[i]);
     } else {
       Serial.print(" ");
     }
     Serial.print(" ");
   }
-  if (values[11] == LOW) {
+  if (buttons[11] == LOW) {
     pressed = true;
-    Serial.print(valueLabels[11]);
+    Serial.print(buttonLabels[11]);
   } else {
     Serial.print(" ");
   }
   Serial.println("]");
 
   digitalWrite(LED_BUILTIN, pressed ? HIGH : LOW);
+}
+
+void _pinMode(Pin pin, uint8_t mode) {
+  pinMode(static_cast<uint8_t>(pin), mode);
+}
+
+int _digitalRead(Pin pin) {
+  return digitalRead(static_cast<uint8_t>(pin));
+}
+
+void _digitalWrite(Pin pin, uint8_t value) {
+  digitalWrite(static_cast<uint8_t>(pin), value);
 }

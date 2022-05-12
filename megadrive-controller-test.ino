@@ -100,23 +100,19 @@ void printButtons(const bool buttons[12]) {
 }
 
 void blinkButtons(const bool buttons[12]) {
-  auto pressed = false;
-
   for (const auto &mapping : low) {
     if (buttons[static_cast<uint8_t>(mapping.button)] == LOW) {
-      pressed = true;
-      break;
+      return digitalWrite(LED_BUILTIN, HIGH);
     }
   }
 
   for (const auto &mapping : high) {
     if (buttons[static_cast<uint8_t>(mapping.button)] == LOW) {
-      pressed = true;
-      break;
+      return digitalWrite(LED_BUILTIN, HIGH);
     }
   }
 
-  digitalWrite(LED_BUILTIN, pressed ? HIGH : LOW);
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void _pinMode(Pin pin, uint8_t mode) {

@@ -1,6 +1,6 @@
 ### Megadrive Controller Test
 
-An Arduino sketch to allow testing the function of a Sega Megadrive 3 button controller. This will poll all the inputs at approximately 60Hz, blink the in-built LED if an input is detected, and output the status of each on the USB serial line every tenth sample, with the following order:
+An Arduino sketch to allow testing the function of a Sega Megadrive controller (either 3 or 6 button). This will poll all the inputs at approximately 60Hz, blink the in-built LED if an input is detected, and output the status of each on the USB serial line every tenth sample, with the following order:
 
 ```
 UDLRSABCMXYZ

@@ -3,19 +3,23 @@
 An Arduino sketch to allow testing the function of a Sega Megadrive 3 button controller. This will poll all the inputs at approximately 60Hz, blink the in-built LED if an input is detected, and output the status of each on the USB serial line every tenth sample, with the following order:
 
 ```
-ASUDLRBC
+UDLRSABCMXYZ
 ```
 
 where each position denotes the following buttons:
 
-* `A`   A button
-* `S`   start button
 * `U`   up button
 * `D`   down button
 * `L`   left button
 * `R`   right button
+* `S`   start button
+* `A`   A button
 * `B`   B button
 * `C`   C button
+* `M`   mode button
+* `X`   X button
+* `Y`   Y button
+* `Z`   Z button
 
 The value at each position can either be the short label above, or `.` to indicate that the button isn't being pressed.
 
